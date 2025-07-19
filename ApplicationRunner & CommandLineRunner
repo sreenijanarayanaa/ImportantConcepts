@@ -1,0 +1,15 @@
+=> Application Runner(I) <=
+
+Application Runner is an interface that allows us to run code right after application gets started.
+Our class implementes this interface and overrides the run method inside it.
+```java
+@SpringBootApplication
+public class DemoApplication implements ApplicationRunner {
+public static void main(String[] args) {
+SpringApplication.run(DemoApplication.class, args);
+}
+@Override
+public void run(ApplicationArguments arg0) throws Exception {
+System.out.println("Hello World from Application Runner");
+}
+```
