@@ -1,8 +1,8 @@
-=> Application Runner(I) <=
+=> ApplicationRunner(I) <=
 
 Application Runner is an interface that allows us to run code right after application gets started.
 Our class implementes this interface and overrides the run method inside it.
-```java
+----------------------------------------------------------------
 @SpringBootApplication
 public class DemoApplication implements ApplicationRunner {
 public static void main(String[] args) {
@@ -12,4 +12,31 @@ SpringApplication.run(DemoApplication.class, args);
 public void run(ApplicationArguments arg0) throws Exception {
 System.out.println("Hello World from Application Runner");
 }
-```
+----------------------------------------------------------------
+Now if you can see in the console, "Hello World from Application Runner" will be printed in the console.
+
+=> CommandLineRunner(I) <=
+
+CommandLineRunner is also an interface this allows us to run the code right after the application gets started
+Our class implementes this interface and overrides the run method inside it.
+---------------------------------------------------------------
+@SpringBootApplication
+public class DemoApplication implements CommandLineRunner {
+public static void main(String[] args) {
+SpringApplication.run(DemoApplication.class, args);
+}
+@Override
+public void run(String... arg0) throws Exception {
+System.out.println("Hello world from Command Line Runner");
+}
+}
+-----------------------------------------------------------------
+
+=> Advantages <=
+
+It is useful for tasks like setting up of data or resources
+
+=> Difference between both <=
+
+CommandLineInterface uses String array of arguments,
+where as ApplicationRunner uses ApplicationArguments objects for more flexible argument handling.
