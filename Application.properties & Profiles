@@ -1,0 +1,9 @@
+=> application.properties file <=
+
+This file is used to define various configuration settings/properties for a spring boot application
+It is located in src/main/resources directory
+This allows us to specify different types of properties such as changing the post, database connectivity properties etc
+
+=> Profiles <=
+
+
