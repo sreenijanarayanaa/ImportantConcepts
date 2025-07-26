@@ -11,3 +11,4 @@ For ex, we might need one set of settings for dev, one for testing and yet anoth
 It's like having different playlists in our music app- one for working out, one for relaxing etc.
 Each playlist sets a different mood just like each profile sets up a different environment.
 
+==> Project code and more info on Spring Profiles available in =========SpringProfiles============ repository
