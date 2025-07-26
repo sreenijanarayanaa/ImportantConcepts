@@ -90,6 +90,37 @@ Instead, use:
 AutoCloseable / try-with-resources for resource management.
 Cleaner API (Java 9+).
 
+===============================================
+Try-With-Resources/Automatic Resource Management
+===============================================
+Try-With-Resources is implemented using the AutoCloseable interface.
+Any class that implements this interface can be used with Try-With-Resources. 
+The AutoCloseable interface defines a single method, close() which is called when the resource is no longer needed.
+It accomplishes this by ensuring that resources are closed properly without the need for explicit finally blocks or manual resource management
+----------------------------------------------------------------------------------------------------------------------------------------------
+class CustomResourceClass implements AutoCloseable {
+    public CustomResourceClass() {
+        System.out.println("CustomResourceClass: Acquired");
+    }
+
+    public void performOperation() {
+        System.out.println("CustomResourceClass: Performing operation");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("CustomResourceClass: Closed");
+    }
+}
+
+public class CustomResourceClassExample {
+    public static void main(String[] args) {
+        try (CustomResourceClass resource = new CustomResourceClass()) {
+            resource.performOperation();
+        } // CustomResource is automatically closed at the end of the try block
+    }
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------
 ⚠️ Limitations of GC
 GC can pause application threads (Stop-The-World).
 No control over when it will execute.
