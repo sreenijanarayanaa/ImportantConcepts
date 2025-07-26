@@ -1,1 +1,501 @@
+Generics:
+It allows us to write classes, Interfaces and methods that work with different data types
+without having to specify the exact type in advance
+
+Adavnatges:
+Flexibility
+Reusablility
+Type-safe -> Compile-time checking of types prevents
+
+=> Example 1: Generic class
+We can create a class of type T(Generic type parameter), it is like a placeholder for a datatype
+the same class can be reused with different data types without rewriting the code.
+------------------------------------------------------------------------------------------------
+Class BoX<T>{
+T value;
+void set(T value) {
+    this.value = value;
+  }
+
+  T get() {
+    return value;
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+
+    // Create a Box to hold a String
+    Box<String> stringBox = new Box<>();
+    stringBox.set("Hello");
+    System.out.println("Value: " + stringBox.get()); // Value: Hello
+
+    // Create a Box to hold an Integer
+    Box<Integer> intBox = new Box<>();
+    intBox.set(50);
+    System.out.println("Value: " + intBox.get()); // Value: 50
+  }
+}
+---------------------------------------------------------------------------
+
+
+
+=> Example 2: Generic Methods
+We can also create methods that work with any data type using generics
+This is useful when you want to write one method that works with multiple types, instead of repeating code for each one.
+--------------------------------------------------------------------------------
+public class Main {
+  // Generic method: works with any type T
+  public static <T> void printArray(T[] array) {
+    for (T item : array) {
+      System.out.println(item);
+    }
+  }
+
+  public static void main(String[] args) {
+    // Array of Strings
+    String[] names = {"Jenny", "Liam"};
+
+    // Array of Integers
+    Integer[] numbers = {1, 2, 3};
+
+    // Call the generic method with both arrays
+    printArray(names);
+    printArray(numbers);
+  }
+}
+---------------------------------------------------------------------------------
+=> You can use the extends keyword to limit the types a generic class or method can accept.
+
+=> Bounded Type Parameters
+
+Sometimes, you want to restrict the types that can be used as type arguments.
+This is where bounded type parameters come into play.
+Bounded type parameters in Java generics allow you to specify constraints on the types that can be used as arguments for a type parameter.
+You can specify an upper bound using the extends keyword, 
+which means that the type parameter must be a subtype of a specific class or implement a specific interface. 
+Similarly a lower bounded wildcard allows you to specify that a type must be a supertype of a specified class. It uses the super keyword.
+
+Example of Bounded Type Parameters
+-------------------------------------------------------------------------------------------------------------------------------------
+import java.util.Arrays;
+import java.util.List;
+
+public class BoundedTypeParameterExample {
+
+/*The method calculateSum is defined with a bounded type parameter
+ <T extends Number>. This means that T can be any type that is a subclass 
+of Number. The method calculates the sum of the elements in the list by
+ converting each element to a double using the doubleValue() method.*/
+
+
+    // Generic method with bounded type parameter
+    public static <T extends Number> double calculateSum(List<T> list) {
+        double sum = 0.0;
+        for (T number : list) {
+            sum += number.doubleValue();
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        // List of Integers
+        List<Integer> intList = Arrays.asList(1, 2, 3, 4, 5);
+        double intSum = calculateSum(intList);
+        System.out.println("Sum of Integer list: " + intSum);
+        // Output: Sum of Integer list: 15.0
+
+        // List of Doubles
+        List<Double> doubleList = Arrays.asList(1.1, 2.2, 3.3, 4.4);
+        double doubleSum = calculateSum(doubleList);
+        System.out.println("Sum of Double list: " + doubleSum);
+        // Output: Sum of Double list: 11.0
+
+        // List of Floats
+        List<Float> floatList = Arrays.asList(1.0f, 2.0f, 3.0f);
+        double floatSum = calculateSum(floatList);
+        System.out.println("Sum of Float list: " + floatSum);
+        // Output: Sum of Float list: 6.0
+    }
+}
+----------------------------------------------------------------------------------------------
+In the main method, we create three lists: one for Integer, one for Double, and one for Float. 
+We then call the calculateSum method for each list and print the results. The method works with all these types because they are all subclasses of Number.
+
+This example illustrates how to use bounded type parameters in Java generics to create methods that can operate on a range of related types, providing flexibility while maintaining type safety.
+
+Another Example
+-------------------------------------------------------------------------------------------------
+import java.util.ArrayList;
+import java.util.List;
+
+public class BoundedTypeParameterExample {
+
+/*The printNumbers method accepts a list of Number or any of its 
+subclasses (Integer, Double, etc.). The wildcard ? extends Number 
+ensures that the list can contain any type that is a subclass of Number. 
+The method iterates over the list and prints each number.*/
+
+    // Upper bounded wildcard example: accepts a list of Number or its subclasses
+    public static void printNumbers(List<? extends Number> list) {
+        for (Number number : list) {
+            System.out.println(number);
+        }
+    }
+
+
+/*The addIntegers method accepts a list of Integer or any of its 
+superclasses (Number, Object, etc.). The wildcard ? super Integer 
+ensures that the list can accept Integer objects. The method adds 
+three integers to the list.*/
+
+    // Lower bounded wildcard example: accepts a list of Integer or its superclasses
+    public static void addIntegers(List<? super Integer> list) {
+        list.add(1);
+        list.add(2);
+        list.add(3);
+    }
+
+    public static void main(String[] args) {
+        // Upper bounded wildcard example with a list of Integers
+        List<Integer> intList = new ArrayList<>();
+        intList.add(10);
+        intList.add(20);
+        intList.add(30);
+        System.out.println("Printing numbers (upper bound):");
+        printNumbers(intList);
+        // Output:
+        // 10
+        // 20
+        // 30
+
+        // Upper bounded wildcard example with a list of Doubles
+        List<Double> doubleList = new ArrayList<>();
+        doubleList.add(1.1);
+        doubleList.add(2.2);
+        doubleList.add(3.3);
+        System.out.println("Printing numbers (upper bound):");
+        printNumbers(doubleList);
+        // Output:
+        // 1.1
+        // 2.2
+        // 3.3
+
+        // Lower bounded wildcard example
+        List<Number> numberList = new ArrayList<>();
+        System.out.println("Adding integers (lower bound):");
+        addIntegers(numberList);
+        for (Number number : numberList) {
+            System.out.println(number);
+        }
+        // Output:
+        // 1
+        // 2
+        // 3
+    }
+}
+-----------------------------------------------------------------------------------------------------------------
+=> Wildcards in Generics
+Wildcards in generics are represented by the `?` symbol and are used to specify unknown types. 
+They can be useful in scenarios where you want to relax the restrictions on the types used.
+
+Types of Wildcards
+1. Unbounded Wildcard (`?`): Represents an unknown type.
+2. Bounded Wildcard with an Upper Bound (`? extends T`): Represents a type that is a subtype of `T`.
+3. Bounded Wildcard with a Lower Bound (`? super T`): Represents a type that is a supertype of `T`.
+
+Example of Using Wildcards
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class WildcardExamples {
+
+    // Unbounded wildcard example: accepts a list of any type
+    public static void printList(List<?> list) {
+        for (Object obj : list) {
+            System.out.println(obj);
+        }
+    }
+
+    /*Bounded wildcard with an upper bound example: accepts a list of 
+      Number or its subclasses*/
+
+    public static double sumOfNumbers(List<? extends Number> list) {
+        double sum = 0.0;
+        for (Number num : list) {
+            sum += num.doubleValue();
+        }
+        return sum;
+    }
+
+    /*Bounded wildcard with a lower bound example: accepts a list of 
+      Integer or its superclasses*/
+
+    public static void addIntegers(List<? super Integer> list) {
+        list.add(1);
+        list.add(2);
+        list.add(3);
+    }
+
+    public static void main(String[] args) {
+        // Unbounded wildcard example
+        List<String> stringList = Arrays.asList("A", "B", "C");
+        System.out.println("Unbounded wildcard example:");
+        printList(stringList);
+        // Output:
+        // A
+        // B
+        // C
+
+        // Bounded wildcard with an upper bound example
+        List<Integer> intList = Arrays.asList(1, 2, 3, 4, 5);
+        System.out.println("Sum of numbers (upper bound): " + sumOfNumbers(intList));
+        // Output: Sum of numbers (upper bound): 15.0
+
+        List<Double> doubleList = Arrays.asList(1.1, 2.2, 3.3);
+        System.out.println("Sum of numbers (upper bound): " + sumOfNumbers(doubleList));
+        // Output: Sum of numbers (upper bound): 6.6
+
+        // Bounded wildcard with a lower bound example
+        List<Number> numberList = new ArrayList<>();
+        System.out.println("Adding integers (lower bound):" + addIntegers(numberList););
+        
+        for (Number num : numberList) {
+            System.out.println(num);
+        }
+        // Output:
+        // 1
+        // 2
+        // 3
+    }
+}
+----------------------------------------------------------------
+=> Generic Constraints and Type Erasure
+=>Generic Constraints
+
+Generics in Java provide a powerful way to create classes, interfaces, and methods with type parameters. 
+However, there are certain constraints and limitations associated with using generics.
+Understanding these constraints is essential for writing effective and type-safe generic code.
+
+Key Constraints of Generics in Java
+
+==> 1.No Primitive Types:
+— Generics work only with reference types, not with primitive types.
+— You cannot directly use primitive types (such as `int`, `char`, `double`, etc.) as type parameters in generics.
+— To use primitive types with generics, you need to use their corresponding wrapper classes (such as `Integer`, `Character`, `Double`, etc.).
+Example
+
+ // This will cause a compilation error:
+ // GenericClass<int> intInstance = new GenericClass<>();
+
+// Correct way using wrapper class:
+ GenericClass<Integer> integerInstance = new GenericClass<>(123);
+
+
+==> 2. Type Parameters Cannot Be Instantiated:
+— You cannot create instances of type parameters directly within generic classes or methods.
+— This is because type parameters are replaced with their bounds (or `Object` if no bounds are specified) during type erasure, 
+and the exact type information is not available at runtime.
+
+Example:
+
+public class GenericClass<T> {
+
+ // This will cause a compilation error:
+ // T instance = new T();
+private T value;
+public GenericClass(T value) {
+ this.value = value;
+ }
+public T getValue() {
+ return value;
+ }
+ }
+public static void main(String[] args) {
+ GenericClass<String> stringInstance = new GenericClass<>("Hello");
+ System.out.println(stringInstance.getValue()); // Output: Hello
+ }
+
+
+==> 3. Static Members:
+— Static members (fields and methods) in a generic class cannot refer to the type parameter.
+— This is because static members are shared among all instances of the class,  
+regardless of the type parameter, and thus, they cannot be associated with a specific type parameter.
+
+Example:
+
+
+ public class GenericClass<T> {
+  private T value;
+ // This will cause a compilation error:
+
+ // private static T staticValue;
+
+public GenericClass(T value) {
+ this.value = value;
+ }
+public T getValue() {
+ return value;
+ }
+
+// Static method cannot use type parameter T
+ // public static T createInstance() {
+ // return new T();
+ // }
+// Correct way: static method can use its own type parameter
+
+ public static <U> GenericClass<U> createGenericInstance(U value) {
+ return new GenericClass<>(value);
+ }
+ }
+public static void main(String[] args) {
+ GenericClass<String> stringInstance = new GenericClass<>("Hello");
+ System.out.println(stringInstance.getValue()); // Output: Hello
+GenericClass<Integer> integerInstance = GenericClass.createGenericInstance(123);
+ System.out.println(integerInstance.getValue()); // Output: 123
+ }
+--------------------------------------------------------------------------------------------------------
+==> Type Erasure
+
+Type erasure is a process during compilation where the generic type information is removed, or “erased,” and replaced with raw types or type bounds. 
+This allows for backward compatibility with older versions of Java that do not support generics. 
+However, it also imposes certain limitations on what you can do with generics.
+
+Key Points of Type Erasure:
+
+Removal of Type Parameters:
+— During compilation, type parameters are replaced with their bounds or `Object` if no bounds are specified.
+— Example:
+public class GenericClass<T> {
+ private T value;
+public GenericClass(T value) {
+ this.value = value;
+ }
+public T getValue() {
+ return value;
+ }
+ }
+After type erasure, the class looks like this:
+
+
+ public class GenericClass {
+ private Object value;
+ public GenericClass(Object value) {
+ this.value = value;
+ }
+public Object getValue() {
+ return value;
+ }
+ }
+
+
+2. Replacement with Bounds:
+— If a type parameter has bounds, it is replaced with the first bound.
+— Example:
+
+
+ public class BoundedGeneric<T extends Number> {
+ private T value;
+ public BoundedGeneric(T value) {
+ this.value = value;
+ }
+ public double doubleValue() {
+ return value.doubleValue();
+ }
+ }
+After type erasure, the class looks like this:
+
+
+ public class BoundedGeneric {
+ private Number value;
+ public BoundedGeneric(Number value) {
+ this.value = value;
+ }
+public double doubleValue() {
+ return value.doubleValue();
+ }
+ }
+
+
+
+3. Bridge Methods:
+— The compiler generates synthetic bridge methods to maintain polymorphism with generics.
+— Example:
+
+class Node<T> {
+ public T data;
+public Node(T data) {
+ this.data = data;
+ }
+public T getData() {
+ return data;
+ }
+ }
+class MyNode extends Node<Integer> {
+ public MyNode(Integer data) {
+ super(data);
+ }
+@Override
+ public Integer getData() {
+ return super.getData();
+ }
+ }
+After type erasure, the bridge method ensures compatibility:
+
+
+class MyNode extends Node {
+ public MyNode(Integer data) {
+ super(data);
+ }
+@Override
+ public Integer getData() {
+ return (Integer) super.getData();
+ }
+
+// Bridge method
+ public Object getData() {
+ return getData();
+ }
+ }
+4. Inability to Use instanceof with Parameterized Types:
+— Since generic type information is erased, you cannot use `instanceof` with parameterized types.
+— Example:
+
+List<String> stringList = new ArrayList<>();
+ if (stringList instanceof List<String>) { // Compilation error
+ // Do something
+ }
+5. Creating Instances of Generic Types:
+— You cannot create instances of generic types directly.
+— Example:
+
+ public class GenericClass<T> {
+ // T instance = new T(); // Compilation error
+ }
+
+List of expected interview questions on generics in Java:
+1. What are generics in Java?
+2. What are the benefits of using generics?
+3. How do generics ensure type safety?
+4. Can you explain type erasure and its impact on generics?
+5. What are the differences between bounded and unbounded wildcards?
+6. What is the difference between `? extends T` and `? super T`?
+7. Can you create a generic class and explain its components?
+8. How do you define a generic method? Provide an example.
+9. What are the limitations of using generics in Java?
+10. Can you explain the concept of reification in the context of Java generics?
+11. Why can’t you use primitive types with generics? How do you work around this limitation?
+12. What is a raw type? Why should raw types be avoided?
+13. Can you provide an example of using generics with collections in Java?
+14. How do generics affect the use of reflection in Java?
+15. What are the differences between `Comparable` and `Comparator` interfaces in the context of generics?
+16. Can you use generics with arrays? Why or why not?
+17. How can you create a generic singleton?
+18. What are type tokens and how are they used in Java generics?
+19. How do you handle generic type parameters in a constructor?
+20. Can you override a method that uses generics? Provide an example.
+
+
 
