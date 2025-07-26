@@ -1,0 +1,187 @@
+============= Spring Boot Actuator ==============
+
+Spring Boot Actuators provides production ready features that helps us to monitor and manage our application.
+It includes several built in end points that provides vital operational information about application which includes health, metrics etc
+
+=> Setting Up Spring Boot Actuator
+To get started with Spring Boot Actuator, you need to add the `spring-boot-starter-actuator` dependency to your project.
+
+If you’re using Maven, add the following to your `pom.xml` file:
+----------------------------------------------------------
+<dependency>
+ <groupId>org.springframework.boot</groupId>
+ <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+---------------------------------------------------------
+For Gradle, add the following line to your `build.gradle` file:
+---------------------------------------------------------
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
+---------------------------------------------------------
+
+=> Configuring Actuator Endpoints
+
+By default, Actuator endpoints are exposed over HTTP. 
+You can configure which endpoints are enabled and how they are accessed in your `application.properties` or `application.yml` file.
+
+Here’s an example configuration in `application.properties`:
+---------------------------------------------------------
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
+---------------------------------------------------------
+
+=> Common Actuator Endpoints
+Spring Boot Actuator provides a variety of built-in endpoints. Below are some of the most commonly used ones:
+
+- /actuator/health: Displays the health status of the application.
+
+- /actuator/info: Displays arbitrary application information.
+
+- /actuator/metrics: Shows ‘metrics’ information for the current application.
+
+- /actuator/env: Displays properties from the `Environment`.
+
+- /actuator/beans: Displays a complete list of all Spring beans in your application.
+
+===================
+Health Endpoint
+===================
+
+The health endpoint provides basic information about the application’s health. 
+To access it, navigate to `/actuator/health` in your browser
+---------------------------------------------------------
+http://localhost:8080/actuator/health
+---------------------------------------------------------
+The response will look something like this:
+
+{
+ "status": "UP"
+}
+---------------------------------------------------------
+You can add custom health indicators to include more detailed information. For example:
+
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        // Custom health check logic
+        boolean isHealthy = checkCustomHealth();
+        if (isHealthy) {
+            return Health.up().withDetail("CustomHealth", "All systems are operational").build();
+        } else {
+            return Health.down().withDetail("CustomHealth", "Some systems are down").build();
+        }
+    }
+
+    private boolean checkCustomHealth() {
+        // Implement your custom health check logic
+        return true;
+    }
+}
+---------------------------------------------------------
+=======================
+Metrics and Monitoring
+=======================
+The `/actuator/metrics` endpoint provides various application metrics. For example, to see JVM memory usage, you can query:
+------------------------------------------------------
+http://localhost:8080/actuator/metrics/jvm.memory.used
+------------------------------------------------------
+The response will look like this:
+
+{
+  "name": "jvm.memory.used",
+  "description": "The amount of used memory",
+  "baseUnit": "bytes",
+  "measurements": [
+    {
+      "statistic": "VALUE",
+      "value": 567123456
+    }
+  ],
+  "availableTags": [
+    {
+      "tag": "area",
+      "values": [
+        "heap",
+        "nonheap"
+      ]
+    },
+    {
+      "tag": "id",
+      "values": [
+        "G1 Eden Space",
+        "G1 Old Gen",
+        "G1 Survivor Space",
+        "Metaspace",
+        "Compressed Class Space"
+      ]
+    }
+  ]
+}
+------------------------------------------------------
+Customizing Actuator Endpoints
+You can create custom endpoints by implementing the `Endpoint` interface. Here’s an example of a custom endpoint that returns a simple message:
+
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.stereotype.Component;
+
+@Component
+@Endpoint(id = "custom")
+public class CustomEndpoint {
+
+    @ReadOperation
+    public String customEndpoint() {
+        return "This is a custom endpoint";
+    }
+}
+This endpoint can be accessed at `/actuator/custom`.
+------------------------------------------------------
+Securing Actuator Endpoints
+By default, all Actuator endpoints are unsecured. 
+In a production environment, it is crucial to secure them.
+You can do this using Spring Security. First, add the Spring Security dependency:
+------------------------------------------------------
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+Then, configure security in your `application.properties`:
+------------------------------------------------------
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
+management.endpoints.web.base-path=/actuator
+------------------------------------------------------
+And create a security configuration class:
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/actuator/**").authenticated()
+            .and()
+            .httpBasic();
+    }
+}
+------------------------------------------------------
+This configuration requires authentication for all Actuator endpoints and uses basic authentication.
+
+Conclusion
+Spring Boot Actuator is a powerful tool for monitoring and managing your application. It provides numerous built-in endpoints to check the application’s health, gather metrics, and perform various management tasks. By understanding how to configure and use these endpoints, you can ensure your application runs smoothly and efficiently.
+
+By integrating custom health indicators, custom endpoints, and securing these endpoints using Spring Security, you can tailor Actuator to meet your specific needs. Whether you’re in development or production, Spring Boot Actuator is an invaluable component of the Spring Boot ecosystem.
+
+Spring Boot
+Actuator
