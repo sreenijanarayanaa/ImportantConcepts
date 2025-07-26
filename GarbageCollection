@@ -1,0 +1,110 @@
+🧠 What is Garbage Collection?
+
+Garbage Collection (GC) is the name given to the automatic memory management in java
+It is an automatic process of removing unreferenced objects from the JVM’s Heap memory.
+It helps in memory management by cleaning up space occupied by objects that are no longer accessible.
+GC is built into the JVM and is handled internally using Garbage Collector threads.
+
+🧹 Why is Garbage Collection Important?
+
+Frees up memory automatically, preventing memory leaks.
+Makes Java a robust and memory-safe programming language.
+Reduces the need for manual memory management like in C/C++ (malloc, free).
+
+✅ Key Features of Garbage Collector
+Automatic: 
+No need to manually deallocate memory.
+Daemon Thread: 
+GC runs in the background as a low-priority thread.
+Non-deterministic: 
+No guarantee when GC will run — it’s controlled by the JVM.
+
+🔍 Basic Example
+--------------------------------------------------
+package in.xyz;
+
+public class Student {
+    public static void main(String[] args) {
+        Student s1 = new Student();  // Object created
+        s1 = null;                   // Object becomes unreferenced
+        System.gc();                 // Suggest GC to run
+    }
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println("finalize() called...");
+    }
+}
+----------------------------------------------------
+📝 Explanation:
+s1 = null; → the Student object becomes unreachable.
+System.gc(); → requests the JVM to run GC (but not guaranteed).
+If GC runs, it calls the object’s finalize() method before deleting it.
+
+🔍 Difference Between runFinalization() and finalize()
+
+runFinalization() -> Suggests JVM to run finalize() on objects pending finalisation(called explicitly by the programmer)
+finalize() -> Called by the JVM during Garbage collection to clean up the resources if present from the memory before an object is garbade collected.
+
+🔧 How to Request Garbage Collection?
+Java provides two methods to suggest garbage collection:
+
+System.gc();                  // 1. Static method
+Runtime.getRuntime().gc();   // 2. Via Runtime class
+
+❗ Note: These calls only request GC; the JVM may choose to ignore them.
+
+🔁 How Does GC Work Internally in JVM?
+
+Garbage Collection in JVM typically follows these phases:
+
+1. Stop the World
+When GC starts it will trigger STOP THE WORLD (all running threads will be stopped for few milli secs)
+2. Marking
+GC identifies which objects are still reachable (referenced).
+Unreferenced objects are marked for deletion.
+3. Sweeping
+The marked (unreachable) objects are removed from heap memory.
+4. Compaction
+After removal, memory holes are created.
+GC reorganizes memory, moving live objects to fill gaps (improves memory locality).
+
+📌 Lifecycle of an Object in Java Memory
+Object created and stored in Heap.
+If it becomes unreachable (no reference points to it), it becomes eligible for GC.
+Before removal, GC may call the object’s finalize() method (deprecated in newer Java versions).
+Object is deleted and memory is reclaimed.
+
+💡 When Does an Object Become Eligible for GC?
+An object becomes eligible for garbage collection if:
+It is explicitly set to null.
+It goes out of scope.
+It is part of an island of objects with no external references.
+The object is referenced only by weak references.
+
+❌ Why finalize() is Deprecated?
+Unpredictable behavior.
+Not guaranteed to be called.
+Can cause performance issues and memory leaks.
+
+Instead, use:
+AutoCloseable / try-with-resources for resource management.
+Cleaner API (Java 9+).
+
+⚠️ Limitations of GC
+GC can pause application threads (Stop-The-World).
+No control over when it will execute.
+May cause performance drops in real-time systems.
+📊 Popular Garbage Collectors in JVM
+Zoom image will be displayed
+
+Best Practices for Garbage Collection
+1. Choose the Right Garbage Collector: Based on your application’s requirements (throughput vs. latency).
+2. Optimize Object Creation: Minimize unnecessary object creation.
+3. Manage Heap Size: Ensure appropriate heap size to avoid frequent GC pauses.
+4. Monitor GC Performance: Regularly analyze GC logs and adjust JVM parameters as needed.
+5. Use Efficient Data Structures: Choose the right data structures to minimize memory usage.
+
+Conclusion
+Garbage collection is a crucial component of Java’s memory management system, ensuring that unused objects are automatically removed from memory. 
+Understanding how garbage collection works and the different types of garbage collectors available can help you optimize your applications for better performance and stability. 
+By following best practices and tuning GC parameters, you can ensure efficient memory management and improve the overall performance of your Java applications.
