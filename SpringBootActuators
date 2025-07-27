@@ -183,5 +183,4 @@ Spring Boot Actuator is a powerful tool for monitoring and managing your applica
 
 By integrating custom health indicators, custom endpoints, and securing these endpoints using Spring Security, you can tailor Actuator to meet your specific needs. Whether you’re in development or production, Spring Boot Actuator is an invaluable component of the Spring Boot ecosystem.
 
-Spring Boot
-Actuator
+
