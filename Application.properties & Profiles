@@ -2,7 +2,7 @@
 
 This file is used to define various configuration settings/properties for a spring boot application
 It is located in src/main/resources directory
-This allows us to specify different types of properties such as changing the post, database connectivity properties etc
+This allows us to specify different types of properties such as changing the port, database connectivity properties etc
 
 => Profiles <=
 They allows us to seperate parts of application configuration and make it only available in  certain environments
